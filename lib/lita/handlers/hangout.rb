@@ -10,7 +10,7 @@ module Lita
       route(/hangout me (.+)/i, :hangout_me_topic, command: true,
                                                    help: { 'hangout me <topic>' => t('help.hangout_me_topic') })
       route(/hangout present (.+)/i, :hangout_present_topic, command: true,
-                                                   help: { 'hangout present <topic>' => t('help.hangout_me_topic') })
+                                                   help: { 'hangout present <topic>' => t('help.hangout_present_topic') })
 
       def hangout(response)
         response.reply hangout_url(Time.now.to_i)
