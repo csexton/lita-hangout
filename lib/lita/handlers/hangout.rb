@@ -9,6 +9,8 @@ module Lita
       route(/hangout me$/i, :hangout_me_user, command: true, help: { 'hangout me' => t('help.hangout_me') })
       route(/hangout me (.+)/i, :hangout_me_topic, command: true,
                                                    help: { 'hangout me <topic>' => t('help.hangout_me_topic') })
+      route(/hangout present (.+)/i, :hangout_present_topic, command: true,
+                                                   help: { 'hangout present <topic>' => t('help.hangout_me_topic') })
 
       def hangout(response)
         response.reply hangout_url(Time.now.to_i)
@@ -28,10 +30,10 @@ module Lita
         end
       end
 
-      def hangout_me_topic(response)
+      def hangout_me_topic(response, present = false)
         topic = response.match_data[1]
-        url = hangout_url(topic)
-        text = render_template('hangout_topic', url: hangout_url(topic), topic: topic)
+        url = hangout_url(topic, present)
+        text = render_template('hangout_topic', url: url, topic: topic)
 
         case robot.config.robot.adapter
         when :slack
@@ -42,10 +44,14 @@ module Lita
         end
       end
 
+      def hangout_present_topic(response)
+        hangout_me_topic(response, true)
+      end
+
       private
 
-      def hangout_url(sufix)
-        URI.join(HANGOUT_PREFIX, "#{config.domain}/", permalink(sufix)).to_s
+      def hangout_url(sufix, present=false)
+        URI.join(HANGOUT_PREFIX, "#{"present/" if present}", "#{config.domain}/", permalink(sufix)).to_s
       end
 
       def permalink(subject = '')
