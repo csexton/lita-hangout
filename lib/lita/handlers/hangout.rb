@@ -6,11 +6,10 @@ module Lita
       config :domain, type: String, required: true
 
       route(/hangout$/i, :hangout, command: true, help: { 'hangout' => t('help.hangout') })
-      route(/hangout me$/i, :hangout_me, command: true, help: { 'hangout me' => t('help.hangout_me') })
-      route(/hangout me (.+)/i, :hangout_me, command: true,
-                                             help: { 'hangout me <topic>' => t('help.hangout_me_topic') })
+      route(/hangout join (.+)/i, :hangout_me, command: true,
+                                             help: { 'hangout join <topic>' => t('help.hangout_me_topic') })
       route(/hangout present (.+)/i, :hangout_present, command: true,
-                                             help: { 'hangout me <topic>' => t('help.hangout_present_topic') })
+                                             help: { 'hangout present <topic>' => t('help.hangout_present_topic') })
 
       def hangout(response)
         response.reply hangout_url(Time.now.to_i)
