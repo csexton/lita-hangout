@@ -15,11 +15,9 @@ module Lita
                    response.match_data[1]
                  end
         response.reply <<~EOF
-          Google Hangout for #{suffix}
-          >
-          > <Join|#{hangout_url(suffix)}> (or Join with Auth User <1|#{hangout_url(suffix)}?authuser=1> or <2|#{hangout_url(suffix)}?authuser=2>)
-          >
-          > <Present|#{hangout_url(suffix,true)}> (or Present with Auth User <2|#{hangout_url(suffix,true)}?authuser=1> or <2|#{hangout_url(suffix,true)}?authuser=2>)
+          Google Hangout for "#{suffix}"
+          > <#{hangout_url(suffix)}|Join "#{suffix}"> (with authuser <#{hangout_url(suffix)}?authuser=1|1> or <#{hangout_url(suffix)}?authuser=2|2>)
+          > <#{hangout_url(suffix,true)}|Present "#{suffix}"> (with authuser <#{hangout_url(suffix,true)}?authuser=1|1> or <#{hangout_url(suffix,true)}?authuser=2|2>)
         EOF
 
       end
