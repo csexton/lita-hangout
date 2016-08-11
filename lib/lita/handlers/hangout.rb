@@ -5,22 +5,23 @@ module Lita
 
       config :domain, type: String, required: true
 
-      route(/hangout$/i, :hangout, command: true, help: { 'hangout' => t('help.hangout') })
-      route(/hangout join (.+)/i, :hangout_me, command: true,
-                                             help: { 'hangout join <topic>' => t('help.hangout_me_topic') })
-      route(/hangout present (.+)/i, :hangout_present, command: true,
-                                             help: { 'hangout present <topic>' => t('help.hangout_present_topic') })
+      route(/hangout (.+)/i, :hangout, command: true,
+                                          help: { 'hangout <topic>' => t('help.hangout_me_topic') })
 
       def hangout(response)
-        response.reply hangout_url(Time.now.to_i)
-      end
+        suffix = if response.match_data.size == 1
+                   response.user.name
+                 else
+                   response.match_data[1]
+                 end
+        response.reply <<~EOF
+          Google Hangout for #{suffix}
+          >
+          > <Join|#{hangout_url(suffix)}> (or Join with Auth User <1|#{hangout_url(suffix)}?authuser=1> or <2|#{hangout_url(suffix)}?authuser=2>)
+          >
+          > <Present|#{hangout_url(suffix,true)}> (or Present with Auth User <2|#{hangout_url(suffix,true)}?authuser=1> or <2|#{hangout_url(suffix,true)}?authuser=2>)
+        EOF
 
-      def hangout_me(response)
-        if response.match_data.size == 1
-          response.reply hangout_url(response.user.name)
-        else
-          response.reply hangout_url(response.match_data[1])
-        end
       end
 
       def hangout_present(response)
@@ -29,8 +30,8 @@ module Lita
 
       private
 
-      def hangout_url(sufix, present=false)
-        URI.join(HANGOUT_PREFIX, "#{"present/" if present}", "#{config.domain}/", permalink(sufix)).to_s
+      def hangout_url(suffix, present=false)
+        URI.join(HANGOUT_PREFIX, "#{"present/" if present}", "#{config.domain}/", permalink(suffix)).to_s
       end
 
       def permalink(subject = '')
